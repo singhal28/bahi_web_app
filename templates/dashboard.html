@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="C:\Users\EMP269\Documents\py_web\static\budget_2942269.png">
+    
+    <!-- Bootstrap 4 CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2n0zGzX2RjpZylKKt5F5tqqyaNGoiqTZTfzROkghlIq9KhJ0pbgFE6sL22Qh" crossorigin="anonymous">
+    
+    <!-- Custom CSS for styling -->
+    <style>
+        body {
+            background-color: #f4f7fc;
+            font-family: 'Arial', sans-serif;
+            padding-top: 50px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .dash {
+            background-color: #00bcd4;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .dash h1 {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .main-content input, .main-content a {
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            color: aliceblue;
+            background-color: #8a2be2;
+            margin: 10px;
+            width: 100%;
+            max-width: 220px;
+            text-decoration: none;
+        }
+
+        .main-content a {
+            display: block;
+            margin-top: 15px;
+        }
+
+        /* Responsive design for smaller screens */
+        @media (max-width: 768px) {
+            .dash h1 {
+                font-size: 24px;
+            }
+
+            .main-content input, .main-content a {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Dashboard Section -->
+        <div class="dash">
+            <h1>Welcome, {{CurrUser[0]["username"]}} on बही</h1>
+            <a href="/logout" class="btn btn-danger">LogOut</a>
+        </div>
+
+        <!-- First Set of Stats -->
+        <div class="main-content">
+            <input type="text" value="Total Products" readonly>
+            <input type="text" value="{{ dynamic_products }}" readonly>
+            <input type="text" value="Total Customers" readonly>
+            <input type="text" value="{{ dynamic_customers }}" readonly>
+        </div>
+
+        <!-- Second Set of Stats -->
+        <div class="main-content">
+            <input type="text" value="Today's Sales" readonly>
+            <input type="text" value="{{ today_sales }}" readonly>
+            <input type="text" value="Total Sales" readonly>
+            <input type="text" value="{{ total_sales }}" readonly>
+        </div>
+
+        <!-- Action Links -->
+        <div class="main-content">
+            <a href="/addProductRender">Add New Product</a>
+            <a href="/addCustomerRender">Add New Customer</a>
+            <a href="/addLedgerRender">Let's Start Sales</a>
+            <a href="/report">Sales Report</a>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zyQ9Hi6HfXIm0Y1J7qQQxkOe1HbsIcm93f8O+60A" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0a4b0puuG6xRaARowYNggd+JmjE4p+zjco1VVy5cUmyRfQ8hD" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-9aIt2n0zGzX2RjpZylKKt5F5tqqyaNGoiqTZTfzROkghlIq9KhJ0pbgFE6sL22Qh" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customers</title>
+    <!-- Bootstrap 4 CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2n0zGzX2RjpZylKKt5F5tqqyaNGoiqTZTfzROkghlIq9KhJ0pbgFE6sL22Qh" crossorigin="anonymous">
+    
+    <!-- Custom CSS for styling -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+            padding-top: 50px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .dash {
+            background-color: #00bcd4;
+            color: white;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .dash h1 {
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        .dash h3 {
+            font-size: 20px;
+        }
+
+        .post {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .post h3 {
+            font-size: 24px;
+            color: #00796b;
+        }
+
+        .textboxes input, .customer-search input {
+            border-radius: 8px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            width: 100%;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .textboxes input {
+            width: calc(50% - 10px);
+        }
+
+        .textboxes .textbox-pair {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .result {
+            width: 100px;
+            margin-left: 15px;
+            text-align: right;
+        }
+
+        .total {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .customer-search input {
+            width: 100%;
+        }
+
+        .customer-search label, .post label {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .post button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .post button:hover {
+            background-color: #45a049;
+        }
+
+        select {
+            border-radius: 8px;
+            padding: 10px;
+            width: 100%;
+            font-size: 16px;
+            border: 1px solid #ddd;
+        }
+
+        @media (max-width: 768px) {
+            .textboxes input {
+                width: 100%;
+            }
+
+            .textboxes .textbox-pair {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .post button {
+                width: auto;
+            }
+        }
+    </style>
+
+    <script>
+        // Fetch options dynamically on page load
+        async function loadOptions() {
+            const response = await fetch("/getProductOptions");
+            const options = await response.json();
+            const select = document.getElementById("choices");
+
+            // Clear existing options
+            select.innerHTML = "";
+
+            // Populate the dropdown with options
+            options.forEach(option => {
+                const opt = document.createElement("option");
+                opt.value = option.id;
+                opt.textContent = option.name;
+                select.appendChild(opt);
+            });
+        }
+
+        // Update textboxes based on selected products
+        function updateTextboxes() {
+            const selectedOptions = Array.from(document.getElementById("choices").selectedOptions);
+            const textboxContainer = document.getElementById("textboxContainer");
+
+            // Clear previous textboxes
+            textboxContainer.innerHTML = "";
+
+            selectedOptions.forEach(option => {
+                const textboxPair = document.createElement("div");
+                textboxPair.classList.add("textbox-pair");
+
+                // Create two textboxes for each selected option
+                const textbox1 = document.createElement("input");
+                textbox1.type = "number";
+                textbox1.name = `input1_${option.value}`;
+                textbox1.step = "any";
+                textbox1.placeholder = `Enter Quantity for ${option.textContent}`;
+                textbox1.required = true;
+                textbox1.addEventListener("input", calculateSum);
+
+                const textbox2 = document.createElement("input");
+                textbox2.type = "number";
+                textbox2.name = `input2_${option.value}`;
+                textbox2.step = "any";
+                textbox2.required = true;
+                textbox2.placeholder = `Enter Amount for 1 Quantity ${option.textContent}`;
+                textbox2.addEventListener("input", calculateSum);
+
+                const resultLabel = document.createElement("label");
+                resultLabel.classList.add("result");
+                resultLabel.textContent = "0"; // Initial value
+
+                // Append textboxes and result label to the textbox pair container
+                textboxPair.appendChild(textbox1);
+                textboxPair.appendChild(textbox2);
+                textboxPair.appendChild(resultLabel);
+                textboxContainer.appendChild(textboxPair);
+            });
+        }
+
+        // Calculate total sum of all products
+        function calculateSum() {
+            let totalSum = 0;
+            const textboxPairs = document.querySelectorAll(".textbox-pair");
+
+            textboxPairs.forEach(pair => {
+                const inputs = pair.querySelectorAll("input");
+                const resultLabel = pair.querySelector(".result");
+
+                const value1 = parseFloat(inputs[0].value) || 0;
+                const value2 = parseFloat(inputs[1].value) || 0;
+
+                const sum = value1 * value2;
+                resultLabel.textContent = sum.toFixed(2); // Update result label with the sum
+                totalSum += sum;
+            });
+            document.getElementById("totalSumLabel").textContent = `Total Amount: ${totalSum.toFixed(2)}`;
+        }
+
+        // Handle form submission
+        function handleSubmit(event) {
+            event.preventDefault();  // Prevent the default form submission
+            const formData = new FormData(document.getElementById("dynamicForm"));
+
+            // Collect selected options
+            const selectedOptions = Array.from(document.getElementById("choices").selectedOptions).map(option => option.value);
+            
+            // Collect textbox values and add them to the form data
+            selectedOptions.forEach(option => {
+                const input1 = document.querySelector(`input[name="input1_${option}"]`);
+                const input2 = document.querySelector(`input[name="input2_${option}"]`);
+                formData.append(`input1_${option}`, input1 ? input1.value : "");
+                formData.append(`input2_${option}`, input2 ? input2.value : "");
+            });
+
+            // Send form data to the server
+            fetch("/ledgerSubmit", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Form Submitted", data);
+                document.getElementById("dynamicForm").reset();
+                document.getElementById("textboxContainer").innerHTML = "";
+                document.getElementById("totalSumLabel").textContent = "Total Amount: 0";
+            })
+            .catch(error => {
+                console.error("Error submitting form", error);
+            });
+        }
+
+        window.onload = loadOptions;
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="dash">
+            <h1>बही Dashboard</h1>
+            <h3>Welcome, {{CurrUser[0]["username"]}} on बही</h3>
+            <br><a href="/logout">LogOut</a><span> - </span><a href="/dashboard">Main</a><br>
+        </div>
+
+        <div class="post">
+            <h3>Let's Start Sales!</h3>
+
+            <form id="dynamicForm" onsubmit="handleSubmit(event)">
+                <div class="customer-search">
+                    <label for="customerSearch">Search Customer</label>
+                    <input type="text" id="customerSearch" name="customerSearch" placeholder="Search for customer" list="customerList" required>
+                    <datalist id="customerList">
+                        {% for customer in customers %}
+                            <option value="{{ customer['name'] }}"></option>
+                        {% endfor %}
+                    </datalist>
+                </div>
+
+                <!-- Date Picker -->
+                <div class="customer-search">
+                    <label for="datePicker">Select Date</label>
+                    <input type="date" id="datePicker" name="datePicker" value="{{ today }}" max="{{ today }}">
+                </div>
+
+                <br><label for="choices">Choose Products:</label><br>
+                <select id="choices" name="choices" multiple onchange="updateTextboxes()" class="form-control">
+                    <!-- Options will be loaded dynamically -->
+                </select>
+
+                <div id="textboxContainer" class="textboxes">
+                    <!-- Textboxes will appear here -->
+                </div>
+
+                <div id="totalSumContainer" class="total">
+                    <label id="totalSumLabel">Total Amount: 0</label>
+                </div><br>
+
+                <label for="paymentMode">Payment Mode:</label>
+                <select id="paymentMode" name="paymentMode" required class="form-control">
+                    <option value="cash">Cash</option>
+                    <option value="credit">Credit</option>
+                </select>
+
+                <button type="submit" class="btn btn-success btn-lg mt-3">Submit</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

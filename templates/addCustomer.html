@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customers</title>
+
+    <!-- Bootstrap 4 CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2n0zGzX2RjpZylKKt5F5tqqyaNGoiqTZTfzROkghlIq9KhJ0pbgFE6sL22Qh" crossorigin="anonymous">
+
+    <!-- Custom CSS for styling -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+            padding-top: 50px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .dash {
+            background-color: #00bcd4;
+            color: white;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .dash h1 {
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        .dash h3 {
+            font-size: 20px;
+        }
+
+        .post {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .post h3 {
+            font-size: 24px;
+            color: #00796b;
+        }
+
+        .post input[type="text"] {
+            border-radius: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            width: 100%;
+            max-width: 400px;
+            font-size: 16px;
+        }
+
+        .post input[type="submit"] {
+            background-color: #8a2be2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 10px;
+            width: auto;
+        }
+
+        .post input[type="submit"]:hover {
+            background-color: #7b1fa2;
+        }
+
+        .all {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .all p {
+            font-size: 18px;
+            color: #555;
+        }
+
+        .all a {
+            color: #f44336;
+            text-decoration: none;
+        }
+
+        .all a:hover {
+            text-decoration: underline;
+        }
+
+        .nav-links {
+            font-size: 18px;
+            color: #00796b;
+        }
+
+        /* Responsive design for smaller screens */
+        @media (max-width: 768px) {
+            .post input[type="text"] {
+                max-width: 100%;
+            }
+
+            .post input[type="submit"] {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Dashboard Section -->
+        <div class="dash">
+            <h1>बही Dashboard</h1>
+            <h3>Welcome, {{CurrUser[0]["username"]}} on बही</h3>
+            <div class="nav-links">
+                <a href="/logout">LogOut</a> <span> - </span> <a href="/dashboard">Main</a>
+            </div>
+        </div>
+
+        <!-- Add Customer Section -->
+        <div class="post">
+            <h3>Let's Add New Customers!</h3>
+            <form action="/addCustomer" method="POST" autocomplete="off">
+                <label for="customerName">Customer Name:</label>
+                <input type="text" name="customerName" placeholder="Customer Name" required><br><br>
+
+                <label for="customerContact">Customer Contact:</label>
+                <input type="text" name="customerContact" maxlength="10" placeholder="Customer Contact" required><br><br>
+
+                <label for="customerAddress">Customer Address:</label>
+                <input type="text" name="customerAddress" placeholder="Customer Address"><br><br>
+
+                <input type="submit" value="Add Customer" class="btn btn-success">
+            </form><br><br>
+        </div>
+
+        <!-- Display All Customers -->
+        <div class="all">
+            <h3>All Customers</h3>
+            {% for customer in AllCustomers %}
+                <p><b>Customer Name:</b> {{ customer['customerName'] }}</p>
+                <p><b>Customer Contact:</b> {{ customer['customerContact'] }}</p>
+                <p><b>Customer Address:</b> {{ customer['customerAddress'] }}</p>
+                <a href='delete_customer/{{customer["customerId"]}}'>Delete</a>
+                <hr>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zyQ9Hi6HfXIm0Y1J7qQQxkOe1HbsIcm93f8O+60A" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0a4b0puuG6xRaARowYNggd+JmjE4p+zjco1VVy5cUmyRfQ8hD" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-9aIt2n0zGzX2RjpZylKKt5F5tqqyaNGoiqTZTfzROkghlIq9KhJ0pbgFE6sL22Qh" crossorigin="anonymous"></script>
+</body>
+</html>
